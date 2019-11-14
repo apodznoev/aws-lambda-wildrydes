@@ -13,8 +13,8 @@ var WildRydes = window.WildRydes || {};
     var userPool;
 
     if (!(_config.cognito.userPoolId &&
-          _config.cognito.userPoolClientId &&
-          _config.cognito.region)) {
+        _config.cognito.userPoolClientId &&
+        _config.cognito.region)) {
         $('#noCognitoMessage').show();
         return;
     }
@@ -52,14 +52,24 @@ var WildRydes = window.WildRydes || {};
      * Cognito User Pool functions
      */
 
-    function register(email, password, onSuccess, onFailure) {
+    function register(email, password, familyName, referSource, onSuccess, onFailure) {
         var dataEmail = {
             Name: 'email',
             Value: email
         };
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        userPool.signUp(toUsername(email), password, [attributeEmail], null,
+        var attributeFamilyName = new AmazonCognitoIdentity.CognitoUserAttribute({
+            Name: "family_name",
+            Value: familyName
+        });
+
+        var attributeReferralSource = new AmazonCognitoIdentity.CognitoUserAttribute({
+            Name: "custom:referral_source",
+            Value: referSource
+        });
+
+        userPool.signUp(toUsername(email), password, [attributeEmail, attributeFamilyName, attributeReferralSource], null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -133,6 +143,8 @@ var WildRydes = window.WildRydes || {};
         var email = $('#emailInputRegister').val();
         var password = $('#passwordInputRegister').val();
         var password2 = $('#password2InputRegister').val();
+        var familyName = $('#familyNameInputRegister').val();
+        var referSource = $('#referralSourceInputRegister').val();
 
         var onSuccess = function registerSuccess(result) {
             var cognitoUser = result.user;
@@ -148,7 +160,7 @@ var WildRydes = window.WildRydes || {};
         event.preventDefault();
 
         if (password === password2) {
-            register(email, password, onSuccess, onFailure);
+            register(email, password, familyName, referSource, onSuccess, onFailure);
         } else {
             alert('Passwords do not match');
         }
