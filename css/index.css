@@ -103,7 +103,7 @@ textarea {
 
 body{
   width: 100vw;
-  height: 100vh;
+  height: 100%;
 
   background-image: url(../images/background.png);
   background-size: cover;
@@ -188,7 +188,7 @@ header img{
 }
 
 
-input[type=text], input[type=password], input[type=email] {
+input[type=text], input[type=password], input[type=email], input[type=custom] {
     width: 100%;
     padding: 12px 0;
     margin: 10px 0 30px;
